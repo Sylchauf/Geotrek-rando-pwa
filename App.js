@@ -17,7 +17,7 @@ const backgroundStyle = {
 
 const base_url = 'https://rando.ecrins-parcnational.fr'
 
-const PORT = 5561
+const PORT = 8390
 
 // path where files will be served from (index.html here)
 let path = RNFS.DocumentDirectoryPath
@@ -68,14 +68,10 @@ const App: () => Node = () => {
     }, 4000)
 
     askPermission().then(() => setHavePermission(true))
-
-    setTimeout(() => {
-      setUri(`http://localhost:${PORT}/`)
-    }, 500)
   }, [])
 
   const startServer = async () => {
-    httpBridge.start(PORT, 'http_service', async (request) => {
+    await httpBridge.start(PORT, 'http_service', async (request) => {
 
       const response = await cacheFile(request.url, netInfo.isConnected)
 
@@ -92,6 +88,8 @@ const App: () => Node = () => {
       if (response) httpBridge.respond(request.requestId, 200, type, response)
       else httpBridge.respond(request.requestId, 404, 'text/plain', 'not found')
     });
+
+    setUri(`http://localhost:${PORT}/`)
   }
 
 
